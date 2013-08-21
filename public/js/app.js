@@ -1,55 +1,42 @@
-// Class to represent a row in the seat reservations grid
-function SeatReservation(name, initialMeal) {
+function Streamer(id, name, created_at, updated_at) {
   var self = this;
-  self.name = name;
-  self.meal = ko.observable(initialMeal);
-
-  self.formattedPrice = ko.computed(function() {
-    var price = self.meal().price;
-    return price ? "$" + price.toFixed(2) : "None";
-
-  });
+  self.id = id;
+  self.name = ko.observable(name);
+  self.created_at = created_at;
+  self.updated_at = ko.observable(updated_at);
 }
 
-// Overall viewmodel for this screen, along with initial state
-function ReservationsViewModel() {
+function StreamerViewModel() {
   var self = this;
 
-  // Non-editable catalog data - would come from the server
-  self.availableMeals = [
-    { mealName: "Standard (sandwich)", price: 0 },
-    { mealName: "Premium (lobster)", price: 34.95 },
-    { mealName: "Ultimate (whole zebra)", price: 290 }
-  ];    
+  self.streamers = ko.observableArray([]);
 
-  // Editable data
-  self.seats = ko.observableArray([
-                                  new SeatReservation("Steve", self.availableMeals[0]),
-                                  new SeatReservation("Bert", self.availableMeals[0])
-  ]);
-
-  self.totalSurcharge = ko.computed(function() {
-    var total = 0;
-    for (var i = 0; i < self.seats().length; i++)
-    total += self.seats()[i].meal().price;
-    return total;
-  });
-
-  self.addSeat = function() {
-    self.seats.push(new SeatReservation("", self.availableMeals[1]));
-  }
-  self.removeSeat = function(seat) {
-    self.seats.remove(seat)
+  self.createOrUpdateStreamer = function(json) {
+    var streamer = ko.utils.arrayFirst(self.streamers(), function(current) {
+      return current.id == json.id;
+    });
+    if (streamer) {
+      streamer.name(json.name);
+      streamer.updated_at(json.updated_at);
+    } else {
+      self.streamers.push(new Streamer(json.id, json.name, json.created_at, json.updated_at));
+    }
   }
 }
-ko.applyBindings(new ReservationsViewModel());
+
+ko.bindingHandlers.flashUpdate = {
+  update: function(element) {
+    $(element).animate({"color":"#FF6170"}, 200, "swing", function() {
+      $(element).animate({"color":"#CCC"}, 300);
+    });
+  }
+}
+
+var SVM = new StreamerViewModel();
+ko.applyBindings(SVM);
 
 var socket = new WebSocket("ws://127.0.0.1:8181")
 
-socket.onopen = function (event) {
-  console.log(event);
-};
-
 socket.onmessage = function (event) {
-  console.log(event.data);
+  SVM.createOrUpdateStreamer(ko.utils.parseJson(event.data));
 };

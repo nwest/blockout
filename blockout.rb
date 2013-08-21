@@ -11,7 +11,7 @@ require './models.rb'
 EM.run do
   class Blockout < Sinatra::Base
     configure do
-      set :threaded, false
+      #set :threaded, false
     end
 
     def name_gen
@@ -33,6 +33,11 @@ EM.run do
       s.update(name: name_gen)
       "updated #{s.name}."
     end
+
+    get '/rand' do
+      EM.chan.push Streamer[(1..Streamer.count).to_a.shuffle[0]].to_json
+      "done"
+    end
   end
 
   EM::WebSocket.run(host: '0.0.0.0', port: 8181) do |ws|
@@ -40,13 +45,10 @@ EM.run do
       sid = EM.chan.subscribe { |msg| ws.send msg }
       puts "user #{sid} has connected."
 
-      DB[:streamers].stream.each do |streamer|
+      Streamer.each do |streamer|
         EM.chan.push streamer.to_json
       end
     end
-
-    #ws.onmessage { |msg| EM.chan.push "Received #{msg}." }
-    ws.onclose { puts "connection closed." }
   end
 
   Blockout.run! port: 9393

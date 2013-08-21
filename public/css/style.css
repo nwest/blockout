@@ -1,0 +1,10 @@
+ul {
+  padding-bottom: 10px;
+  clear: left;
+}
+
+li {
+  width: 175px;
+  float: left;
+  margin-left: 50px;
+}
