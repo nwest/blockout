@@ -1,0 +1,11 @@
+<button data-bind="click: addSeat">Reserve another seat</button>
+<ul data-bind="foreach: seats">
+  <li><input data-bind="value: name" /></li>
+  <li><select data-bind="options: $root.availableMeals, value: meal, optionsText: 'mealName'"></select></li>
+  <li data-bind="text: formattedPrice"></li>
+  <li><a href="#" data-bind="click: $root.removeSeat">Remove Seat</a></li>
+</ul>
+
+<h2 data-bind="visible: totalSurcharge() > 0">
+  Total surcharge: $<span data-bind="text: totalSurcharge().toFixed(2)"></span>
+</h2>

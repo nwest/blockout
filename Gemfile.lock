@@ -3,7 +3,11 @@ GEM
   specs:
     daemons (1.1.9)
     dotenv (0.8.0)
+    em-websocket (0.5.0)
+      eventmachine (>= 0.12.9)
+      http_parser.rb (~> 0.5.3)
     eventmachine (1.0.3)
+    http_parser.rb (0.5.3)
     json (1.8.0)
     pg (0.16.0)
     rack (1.5.2)
@@ -28,6 +32,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv (~> 0.8.0)
+  em-websocket
   json (~> 1.8.0)
   pg (~> 0.16.0)
   sequel (~> 4.1.1)
