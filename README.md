@@ -26,6 +26,7 @@ RACK_ENV=development
 ```
 
  * `bundle install`
+ * `rake db:migrate`
  * `thin start`
  * open `http://localhost:9393/`
  * in another tab open `http://localhost:9393/gen`
