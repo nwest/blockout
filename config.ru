@@ -11,4 +11,4 @@ if ENV['RACK_ENV'] == 'development'
 end
 
 require './blockout'
-start app: Blockout.new
+#start app: Blockout.new

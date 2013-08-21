@@ -24,14 +24,14 @@ function ReservationsViewModel() {
 
   // Editable data
   self.seats = ko.observableArray([
-    new SeatReservation("Steve", self.availableMeals[0]),
-    new SeatReservation("Bert", self.availableMeals[0])
+                                  new SeatReservation("Steve", self.availableMeals[0]),
+                                  new SeatReservation("Bert", self.availableMeals[0])
   ]);
 
   self.totalSurcharge = ko.computed(function() {
     var total = 0;
     for (var i = 0; i < self.seats().length; i++)
-      total += self.seats()[i].meal().price;
+    total += self.seats()[i].meal().price;
     return total;
   });
 
@@ -42,5 +42,14 @@ function ReservationsViewModel() {
     self.seats.remove(seat)
   }
 }
-
 ko.applyBindings(new ReservationsViewModel());
+
+var socket = new WebSocket("ws://127.0.0.1:8181")
+
+socket.onopen = function (event) {
+  console.log(event);
+};
+
+socket.onmessage = function (event) {
+  console.log(event.data);
+};
